@@ -23,5 +23,12 @@
             android:title="@string/pref_switch_wifi_off_when_not_scanning"
             android:summary="@string/pref_switch_wifi_off_when_not_scanning_summary" />
 
+        <EditTextPreference
+            android:defaultValue="default.txt"
+            android:key="output_file_name"
+            android:title="Output file"
+            android:summary="@string/pref_save_file_summary"
+            ></EditTextPreference>
+
     </PreferenceCategory>
 </PreferenceScreen>

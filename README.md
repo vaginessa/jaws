@@ -1,3 +1,12 @@
+# Fork notes
+
+This is a fork of JAWS that adds functionality for saving the collected WIFI
+data to a file. This is just a hack to help me collect data for a side project,
+it probably isn't useful upstream.
+
+Big thanks to the [author](https://github.com/jannispinter/) for creating such
+excellent software!
+
 # JAWS - Just another WiFi scanner
 A simple free and open source wifi scanner that supports real time scans of nearby networks. It displays a list of nearby wifi networks ordered by signal strength and periodically rescans for new networks.
 

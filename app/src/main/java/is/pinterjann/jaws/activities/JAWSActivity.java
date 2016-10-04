@@ -23,6 +23,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,10 +33,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import android.os.Environment;
+
 import is.pinterjann.jaws.R;
 import is.pinterjann.jaws.adapter.NetworkAdapter;
 import is.pinterjann.jaws.helper.FrequencyConverter;
 import is.pinterjann.jaws.model.WirelessNetwork;
+
 
 public class JAWSActivity extends AppCompatActivity {
 
@@ -47,8 +52,10 @@ public class JAWSActivity extends AppCompatActivity {
     private boolean isScanning = true;
     private boolean jawsAutoEnabledWifi = false;
     private boolean accessCoarseLocationPermissionGranted = true;
+    private String outputFileDirectory = "JAWS_OUTPUT";
 
     private final int PERMISSION_COARSE_LOCATION = 0;
+    private final int PERMISSION_WRITE_EXTERNAL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +71,8 @@ public class JAWSActivity extends AppCompatActivity {
         listview.setAdapter(networkAdapter);
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+
+        (new File(outputFileDirectory)).mkdir();
 
         /* Fake networks for screenshots
         List<WirelessNetwork> networkList = new ArrayList<>();
@@ -132,9 +141,25 @@ public class JAWSActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_save) {
+            String outputFileName = sharedPreferences.getString("output_file_name", "default.txt");
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            path.mkdirs();
+            File outdir = new File(path, outputFileDirectory);
+            outdir.mkdirs();
+            File outfile = new File(outdir, outputFileName);
+
+            try { if (!outfile.exists()) outfile.createNewFile();}
+            catch (IOException e) {e.printStackTrace();}
+
+            new SaveSSIDsTask().execute(networkAdapter, getApplicationContext(), outfile);
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void startScanning() {
 
@@ -171,6 +196,15 @@ public class JAWSActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSION_COARSE_LOCATION);
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSION_WRITE_EXTERNAL);
+        }
+
     }
 
     @Override
