@@ -156,6 +156,10 @@ public class JAWSActivity extends AppCompatActivity {
             return true;
         }
 
+        else if (id == R.id.action_request_scan) {
+            wifiManager.startScan();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -266,6 +270,7 @@ public class JAWSActivity extends AppCompatActivity {
             networkAdapter.setNetworkList(networkList);
         }
     }
+
 
     public class WifiScanAsyncTask extends AsyncTask<Void, Void, Void> {
 

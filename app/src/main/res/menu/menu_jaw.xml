@@ -20,4 +20,10 @@
         android:title="@string/action_save"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/action_request_scan"
+        android:icon="@drawable/ic_network_wifi_white_24dp"
+        android:title="@string/action_request_scan"
+        app:showAsAction="always"/>
+
 </menu>
