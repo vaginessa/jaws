@@ -1,5 +1,6 @@
 package is.pinterjann.jaws.activities;
 
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class SaveSSIDsTask extends AsyncTask<Object,Void,String> {
 
         /*       Output format looks like:
         # Collected at 2016/10/3 22:32:36
-        'samplessid' , 97:12:89:37:14:54 , -34
+        'samplessid' , 97:12:89:37:14:54 , -34, 70%
         ...
         Sorted in order of signal quality
         */
@@ -63,8 +64,9 @@ public class SaveSSIDsTask extends AsyncTask<Object,Void,String> {
             WirelessNetwork nw = networkList.get(i);
             String ssid = "'" + nw.getSsid() + "'";
             String bssid = nw.getBssid();
-            int strength = nw.getSignal();
-            pwriter.format("%-23s , %-17s , %-5d%n", ssid, bssid, strength);
+            int signalStrength = nw.getSignal();
+            int quality = WifiManager.calculateSignalLevel(signalStrength, 100) + 1;
+            pwriter.format("%-23s , %-17s , %-5d , %3d%%%n", ssid, bssid, signalStrength, quality);
         }
         pwriter.format("%n");
 
